@@ -21,7 +21,7 @@ def open_host(f):
     list_host = []
     with open(f) as writer:
        for i in writer.readlines():
-           i = i.replace("\n","")
+           i = i.replace("\n","").replace("\r\n","")
            if i.startswith(":"):
                proxy, port = i.split(":");
                i = proxy
@@ -60,11 +60,14 @@ def watasi_wa_wibu_desu():
     result()
     
 def result():
-    print "==== [Server Ditumukan] ===="
-    for k,v in list_server.items():
-        print k +": "+ok(str(v))
-        save_files(k +": "+str(v)+"\r\n", save_file)
-    print "Save di: "+save_file+"checkServer.txt"
+    if list_server != {}:
+        print "==== [Server Ditumukan] ===="
+        for k,v in list_server.items():
+            print k +": "+ok(str(v))
+            save_files(k +": "+str(v)+"\r\n", save_file)
+        print "Save di: "+save_file+"checkServer.txt"
+    else:
+        print "Wkwkwkwkw Zonk :v "
 if __name__ == "__main__":
     watasi_wa_wibu_desu()
 

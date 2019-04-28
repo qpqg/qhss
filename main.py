@@ -12,10 +12,12 @@ def banner():
     print "Coded by: Qiuby Zhukhi"
 def ok(isi):    
     return "\033[32m{}\033[00m".format(isi)
+
 def save_files(isi, f):
-    file_name = f+"checkServer.txt"
+    file_name = f+"checkServer1.txt"
     with open(file_name, "a+") as writer:
-        writer.write(str(isi))
+        writer.write(isi)
+        writer.close()
         
 def open_host(f):
     list_host = []
@@ -27,14 +29,17 @@ def open_host(f):
                i = proxy
            list_host.append(i)
     return list_host
-    
-list_server = {}
+
+list_server = []
 def checker(h, m):
     try:
         get_resp = request(m, "http://"+h, timeout=5)
         headers = get_resp.headers["Server"]
-        if headers in cari_server:  
-            list_server.update({"Host":h,"Server": headers, "Status Code":get_resp.status_code})
+        if headers in cari_server:
+            print "Host: {}\nServer: {}\nStatus Code: {}\r\n".format(h, headers, get_resp.status_code)
+            #save_files(k +": "+str(v)+"\r\n", save_file)
+            list_server.append(h)
+            #list_server.update({"Host":h,"Server": headers, "Status Code":get_resp.status_code})
         else:
             print "Host: {}\nServer: {}\nStatus Code: {}\r\n".format(h, headers, get_resp.status_code)
     except Exception as e:
@@ -60,16 +65,17 @@ def watasi_wa_wibu_desu():
     result()
     
 def result():
-    if list_server != {}:
+    if list_server != []:
         print "==== [Server Ditumukan] ===="
-        for k,v in list_server.items():
-            print k +": "+ok(str(v))
-            save_files(k +": "+str(v)+"\r\n", save_file)
+        for i in list_server:
+            print ok(i)
+            save_files(i+"\r\n", save_file)
         print "Save di: "+save_file+"checkServer.txt"
     else:
         print "Wkwkwkwkw Zonk :v "
 if __name__ == "__main__":
-    watasi_wa_wibu_desu()
+    while 1:
+        watasi_wa_wibu_desu()
 
 
 

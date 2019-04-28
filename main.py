@@ -35,11 +35,12 @@ def checker(h, m):
     try:
         get_resp = request(m, "http://"+h, timeout=5)
         headers = get_resp.headers["Server"]
+
         if headers in cari_server:
             print "Host: {}\nServer: {}\nStatus Code: {}\r\n".format(h, headers, get_resp.status_code)
-            #save_files(k +": "+str(v)+"\r\n", save_file)
+
             list_server.append(h)
-            #list_server.update({"Host":h,"Server": headers, "Status Code":get_resp.status_code})
+
         else:
             print "Host: {}\nServer: {}\nStatus Code: {}\r\n".format(h, headers, get_resp.status_code)
     except Exception as e:

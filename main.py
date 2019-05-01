@@ -2,6 +2,8 @@ from requests import request
 from threading import Thread
 from random import randint as magic
 from os import system as hapus
+from bs4 import BeautifulSoup as bs4
+import socket as sock
 #========== [ SETTING DISINI ] ==================
 method = "GET"
 cari_server = ["AkamaiGHost"] #Cari ex: ["AkamaiGHost", "gws"]
@@ -34,18 +36,25 @@ def open_host(f):
                i = proxy
            list_host.append(i)
     return list_host
-    
-list_server = []
+list_dic = {}
 def checker(h, m):
     try:
-        get_resp = request(m, "http://"+h, timeout=waktu, verify=True, allow_redirects = True)
+        get_resp = request(m, "http://"+h, timeout=waktu, verify=True, allow_redirects = False)
         headers = get_resp.headers["Server"]
+        konten_lenght = len(get_resp.text)
+        body = bs4(get_resp.text, "html.parser")
         if headers in cari_server:
-            print "Host: {}\nServer: {}\nStatus Code: {}\r\n".format(h, ok(headers), get_resp.status_code)
-            list_server.append(h)
+            try:
+                hostname, alias, ip = sock.gethostbyaddr(h)
+                sock.timeout(0.01)
+                list_dic.update({h:[hostname, str(get_resp.status_code), headers,konten_lenght, body.title.text]})
+                print "Your Check: {}\nHostname: {}\nServer: {}\nStatus Code: {}\nConten-Lenght: {}\nBody: {}\r\n".format(h, ok(hostname), ok(headers), get_resp.status_code, konten_lenght, body.title)
+            except Exception as e:
+                list_dic.update({h:["NotFound", str(get_resp.status_code), headers,konten_lenght, body.title.text]})
+                print "Your Check: {}\nHostname: Notfound\nServer: {}\nStatus Code: {}\nConten-Lenght: {}\nBody: {}\r\n".format(h,ok(headers), get_resp.status_code, konten_lenght, body.title)
         else:
             print "Host: {}\nServer: {}\nStatus Code: {}\r\n".format(h, headers, get_resp.status_code)
-    except Exception as e:
+    except Exception:
         pass
 
 thread_list = []
@@ -66,7 +75,7 @@ def watasi_wa_wibu_desu():
         thread_list.append(t)
     join_kopi = [i.join() for i in thread_list]
     result()
-      
+     
 def single_scan():
     cek_host = raw_input("Host: http://")
     print ("\n")
@@ -74,17 +83,18 @@ def single_scan():
     result()
     
 def result():
-    global list_server
-    if list_server != []:
-        print "==== [Server Ditumukan] ===="
-        for i in list_server:
-            print ok(i)
-            save_files(i+"\r\n", save_file)
+    global list_dic
+    if list_dic != {}:
+        print ok("==== [Server Ditumukan] ====")
+        for scan,(hname, respcode, server,pjng, body) in list_dic.items():
+            saved_format = "Your Scan: " + scan +"\n"+"Hostname: " + hname +"\n"+ "Status Code: "+str(respcode) + "\n"+ "Server: " + server +"\n" + "Content - Lenght: " + str(pjng)+"\n" + "Body: " + body+"\r\n\r\n"
+            print ok(saved_format)
+            save_files(saved_format, save_file)
         print "Save di: "+save_file+"checkServer.txt"
         print "Membersihkan List"
     else:
         print "Wkwkwkwkw Zonk :v "
-    list_server = []
+    list_dic = {}
 
 def options():
     while 1:

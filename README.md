@@ -8,6 +8,8 @@ qhss adalah alat yang digunakan untuk mencari server dari file list Host dengan 
 - Copy full path file *.txt
 - pastekan ke from menu "Full path"
 - Jika server yang ditentukan dapa, maka Host/proxy server akan disimpan ke path "/storage/emulated/0/FreeHostScan/checkServer.txt"
-## Requiriment
+
+## Requiriment External Modul
 - requests
+- BeautifulSoup
 
